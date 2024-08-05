@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Data Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .slider-container, .dropdown-container, .output-container {
+            margin-bottom: 20px;
+        }
+        .output-container img {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Iris Data Classification</h1>
+    
+    <div class="slider-container">
+        <label for="slider">Select a value: </label>
+        <input type="range" id="slider" min="0" max="100" value="50" oninput="updateSlider(this.value)">
+        <span id="slider-value">50</span> squared is <span id="slider-output">2500</span>
+    </div>
+    
+    <div class="dropdown-container">
+        <label for="plot-select">Which plot would you like to see? </label>
+        <select id="plot-select" onchange="updatePlot()">
+            <option value="pairplot">Pairplot</option>
+            <option value="confusion-matrix">Confusion Matrix Accuracy</option>
+        </select>
+    </div>
+    
+    <div class="output-container">
+        <img id="output-image" src="pairplot.png" alt="Pairplot">
+        <div id="accuracy-container" style="display: none;">
+            <h2>Confusion Matrix Accuracy</h2>
+            <p>Accuracy: <span id="accuracy-value"></span></p>
+            <img src="confusion_matrix.png" alt="Confusion Matrix">
+        </div>
+    </div>
+    
+    <script>
+        function updateSlider(value) {
+            document.getElementById('slider-value').innerText = value;
+            document.getElementById('slider-output').innerText = value * value;
+        }
+        
+        function updatePlot() {
+            var plotSelect = document.getElementById('plot-select').value;
+            var outputImage = document.getElementById('output-image');
+            var accuracyContainer = document.getElementById('accuracy-container');
+            
+            if (plotSelect === 'pairplot') {
+                outputImage.style.display = 'block';
+                accuracyContainer.style.display = 'none';
+            } else if (plotSelect === 'confusion-matrix') {
+                outputImage.style.display = 'none';
+                accuracyContainer.style.display = 'block';
+                fetch('accuracy.txt')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('accuracy-value').innerText = data;
+                    });
+            }
+        }
+    </script>
+</body>
+</html>
